@@ -1,4 +1,4 @@
-export class Games {
+export class Game {
   id: string;
   Title: string;
   CoverImageUrl: string;
