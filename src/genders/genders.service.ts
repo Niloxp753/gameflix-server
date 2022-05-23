@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CreateGendersDto } from './dto/create-genders.dto';
 
 @Injectable()
 export class GendersService {
@@ -6,7 +7,7 @@ export class GendersService {
     return 'Buscar todos os gêneros';
   }
 
-  create() {
-    return 'Criar um gênero';
+  create(createGendersDto: CreateGendersDto) {
+    return 'Criar um gênero: ' + JSON.stringify(createGendersDto);
   }
 }
