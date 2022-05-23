@@ -7,7 +7,7 @@ export class GendersService {
   genders: Gender[] = [];
 
   findAll() {
-    return 'Buscar todos os gêneros';
+    return this.genders;
   }
 
   create(createGendersDto: CreateGendersDto) {
