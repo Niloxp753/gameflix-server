@@ -1,13 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CreateGendersDto } from './dto/create-genders.dto';
+import { Gender } from './entities/genders.entity';
 
 @Injectable()
 export class GendersService {
+  genders: Gender[] = [];
+
   findAll() {
     return 'Buscar todos os gêneros';
   }
 
   create(createGendersDto: CreateGendersDto) {
-    return 'Criar um gênero: ' + JSON.stringify(createGendersDto);
+    const gender: Gender = { id: 'random_id', ...createGendersDto };
+
+    this.genders.push(gender);
+
+    return gender;
   }
 }
