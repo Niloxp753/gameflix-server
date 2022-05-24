@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGendersDto } from './dto/create-genders.dto';
 import { UpdateGendersDto } from './dto/update-genders.dto';
@@ -12,8 +12,14 @@ export class GendersService {
     return this.prisma.genders.findMany();
   }
 
-  findOne(id: string): Promise<Gender> {
-    return this.prisma.genders.findUnique({ where: { id } });
+  async findOne(id: string): Promise<Gender> {
+    const record = await this.prisma.genders.findUnique({ where: { id } });
+
+    if (!record) {
+      throw new NotFoundException(`Registro com o ID '${id}' não encontrado.`);
+    }
+
+    return record;
   }
 
   create(dto: CreateGendersDto): Promise<Gender> {
