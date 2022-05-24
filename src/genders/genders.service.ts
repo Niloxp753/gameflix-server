@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGendersDto } from './dto/create-genders.dto';
+import { UpdateGendersDto } from './dto/update-genders.dto';
 import { Gender } from './entities/genders.entity';
 
 @Injectable()
@@ -19,5 +20,14 @@ export class GendersService {
     const data: Gender = { ...dto };
 
     return this.prisma.genders.create({ data });
+  }
+
+  update(id: string, dto: UpdateGendersDto): Promise<Gender> {
+    const data: Partial<Gender> = { ...dto };
+
+    return this.prisma.genders.update({
+      where: { id },
+      data,
+    });
   }
 }
