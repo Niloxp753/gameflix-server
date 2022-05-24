@@ -30,4 +30,8 @@ export class GendersService {
       data,
     });
   }
+
+  async delete(id: string) {
+    await this.prisma.genders.delete({ where: { id } });
+  }
 }
