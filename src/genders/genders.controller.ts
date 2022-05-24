@@ -5,7 +5,7 @@ import { GendersService } from './genders.service';
 @ApiTags('genders')
 @Controller('genders')
 export class GendersController {
-  constructor(private gendersService: GendersService) {}
+  constructor(private readonly gendersService: GendersService) {}
 
   @Get()
   findAll() {
@@ -13,7 +13,7 @@ export class GendersController {
   }
 
   @Post()
-  create(@Body() createGendersDto: CreateGendersDto) {
-    return this.gendersService.create(createGendersDto);
+  create(@Body() dto: CreateGendersDto) {
+    return this.gendersService.create(dto);
   }
 }

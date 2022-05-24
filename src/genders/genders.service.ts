@@ -1,20 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGendersDto } from './dto/create-genders.dto';
 import { Gender } from './entities/genders.entity';
 
 @Injectable()
 export class GendersService {
-  genders: Gender[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
   findAll() {
-    return this.genders;
+    return this.prisma.genders.findMany();
   }
 
-  create(createGendersDto: CreateGendersDto) {
-    const gender: Gender = { id: 'random_id', ...createGendersDto };
+  create(dto: CreateGendersDto) {
+    const data: Gender = { ...dto };
 
-    this.genders.push(gender);
-
-    return gender;
+    return this.prisma.genders.create({ data });
   }
 }
