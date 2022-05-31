@@ -8,26 +8,26 @@ datasource db {
 }
 
 model Games {
-  id                 String   @id @default(uuid())
-  title              String   @unique
-  coverImageUrl      String
-  description        String
+  id                 String @id @default(uuid())
+  title              String @unique
+  coverImageUrl      String @unique
+  description        String @unique
   year               Int
-  imdbScore          Int
-  trailerYoutubeUrl  String
-  gameplayYoutubeUrl String
+  imdbScore          Float
+  trailerYoutubeUrl  String @unique
+  gameplayYoutubeUrl String @unique
 
   genders Genders[]
 
-  createdAt          DateTime @default(now()) @map("created_at")
-  updatedAt          DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("games")
 }
 
 model Genders {
-  id        String   @id @default(uuid())
-  name      String   @unique
+  id   String @id @default(uuid())
+  name String @unique
 
   games Games[]
 
@@ -38,9 +38,9 @@ model Genders {
 }
 
 model Profiles {
-  id        String   @id @default(uuid())
-  title     String   @unique
-  imageURL  String
+  id       String @id @default(uuid())
+  title    String @unique
+  imageURL String
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -49,13 +49,13 @@ model Profiles {
 }
 
 model Users {
-  id        String   @id @default(uuid())
-  username  String   @unique
-  name      String
-  email     String
-  password  String
-  image     String
-  cpf       String
+  id       String @id @default(uuid())
+  username String @unique
+  name     String
+  email    String @unique
+  password String
+  image    String
+  cpf      String @unique
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
