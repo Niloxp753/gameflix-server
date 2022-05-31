@@ -7,5 +7,5 @@ export class CreateGendersDto {
     description: 'O nome do gênero',
     example: 'Aventura',
   })
-  Name: string;
+  name: string;
 }

@@ -1,1 +1,4 @@
-export class CreateProfileDto {}
+export class CreateProfileDto {
+  title: string;
+  imageURL: string;
+}
