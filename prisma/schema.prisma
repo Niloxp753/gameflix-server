@@ -48,8 +48,7 @@ model Users {
   email     String
   password  String
   image     String
-  cpf       Int
-  isAdmin   String
+  cpf       String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

@@ -31,6 +31,8 @@ export class UsersService {
   }
 
   create(dto: CreateUserDto): Promise<User> {
+    delete dto.confirmPassword;
+
     const data: User = { ...dto };
 
     return this.prisma.users.create({ data }).catch(this.handleError);
@@ -38,6 +40,9 @@ export class UsersService {
 
   async update(id: string, dto: UpdateUserDto): Promise<User> {
     await this.findById(id);
+
+    delete dto.confirmPassword;
+
     const data: Partial<User> = { ...dto };
 
     return this.prisma.users
@@ -56,6 +61,11 @@ export class UsersService {
   handleError(error: Error): undefined {
     const errorLines = error.message?.split('\n');
     const lastErrorLine = errorLines[errorLines.length - 1]?.trim();
+
+    if (!lastErrorLine) {
+      console.error(error);
+    }
+
     throw new UnprocessableEntityException(
       lastErrorLine || 'Algum erro aconteceu ao executar a operação',
     );

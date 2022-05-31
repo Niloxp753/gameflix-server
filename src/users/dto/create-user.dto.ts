@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, IsUrl, Matches, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  IsUrl,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -17,10 +25,17 @@ export class CreateUserDto {
   name: string;
 
   @IsString()
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: 'Email do Usuário',
+    example: 'danilo.diniz2009@gmail.com',
+  })
   email: string;
 
   @IsString()
   @MinLength(6)
+  @IsNotEmpty()
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
     message: 'Senha muito fraca',
   })
@@ -44,17 +59,13 @@ export class CreateUserDto {
   })
   image: string;
 
-  @IsNumber()
-  @MinLength(14)
-  @Matches(/^(([0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2})|([0-9]{11}))$/, {
-    message: 'CPF inválido',
-  })
-  @ApiProperty({
-    description: 'A confirmação da senha deve ser igual a senha',
-    example: '999.999.999-99',
-  })
-  cpf: number;
-
   @IsString()
-  isAdmin: string;
+  @IsNotEmpty()
+  @MinLength(14)
+  @MaxLength(14)
+  @ApiProperty({
+    description: 'CPF do usuário',
+    example: '123.456.789-12',
+  })
+  cpf: string;
 }
