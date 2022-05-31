@@ -5,9 +5,10 @@ import { GamesModule } from './games/games.module';
 import { GendersModule } from './genders/genders.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
+import { ProfilesModule } from './profiles/profiles.module';
 
 @Module({
-  imports: [GamesModule, GendersModule, PrismaModule],
+  imports: [GamesModule, GendersModule, PrismaModule, ProfilesModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
