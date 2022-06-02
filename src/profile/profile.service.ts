@@ -13,11 +13,21 @@ export class ProfilesService {
   constructor(private readonly prisma: PrismaService) {}
 
   findAll(): Promise<Profile[]> {
-    return this.prisma.profiles.findMany();
+    return this.prisma.profile.findMany({
+      include: {
+        user: true,
+        games: true,
+      },
+    });
   }
 
   async findById(id: string): Promise<Profile> {
-    const record = await this.prisma.profiles.findUnique({ where: { id } });
+    const record = await this.prisma.profile.findUnique({
+      where: { id },
+      include: {
+        games: true,
+      },
+    });
 
     if (!record) {
       throw new NotFoundException(`Registro com o ID '${id}' não encontrado.`);
@@ -31,26 +41,28 @@ export class ProfilesService {
   }
 
   create(dto: CreateProfileDto): Promise<Profile> {
-    const data: Profile = { ...dto };
-
-    return this.prisma.profiles.create({ data }).catch(this.handleError);
+    return this.prisma.profile
+      .create({ data: dto, include: { games: true } })
+      .catch(this.handleError);
   }
 
   async update(id: string, dto: UpdateProfileDto): Promise<Profile> {
     await this.findById(id);
-    const data: Partial<Profile> = { ...dto };
 
-    return this.prisma.profiles
+    return this.prisma.profile
       .update({
         where: { id },
-        data,
+        data: dto,
+        include: {
+          games: true,
+        },
       })
       .catch(this.handleError);
   }
 
   async delete(id: string) {
     await this.findById(id);
-    await this.prisma.profiles.delete({ where: { id } });
+    await this.prisma.profile.delete({ where: { id } });
   }
 
   handleError(error: Error): undefined {

@@ -10,10 +10,17 @@ export class CreateProfileDto {
   title: string;
 
   @IsUrl()
+  @IsString()
   @ApiProperty({
     description: 'Imagem do perfil',
     example:
       'https://w7.pngwing.com/pngs/750/504/png-transparent-children-s-games-cartoon-children-playing-game-child-reading-thumbnail.png',
   })
   imageURL: string;
+
+  @IsString()
+  userId: string;
+
+  @IsString()
+  gameId: string;
 }

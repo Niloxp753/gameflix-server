@@ -10,10 +10,10 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateGendersDto } from './dto/create-genders.dto';
-import { UpdateGendersDto } from './dto/update-genders.dto';
-import { Gender } from './entities/genders.entity';
-import { GendersService } from './genders.service';
+import { CreateGenderDto } from './dto/create-gender.dto';
+import { UpdateGenderDto } from './dto/update-gender.dto';
+import { Gender } from './entities/gender.entity';
+import { GendersService } from './gender.service';
 @ApiTags('genders')
 @Controller('genders')
 export class GendersController {
@@ -39,7 +39,7 @@ export class GendersController {
   @ApiOperation({
     summary: 'Criar um Gênero',
   })
-  create(@Body() dto: CreateGendersDto): Promise<Gender> {
+  create(@Body() dto: CreateGenderDto): Promise<Gender> {
     return this.gendersService.create(dto);
   }
 
@@ -49,7 +49,7 @@ export class GendersController {
   })
   update(
     @Param('id') id: string,
-    @Body() dto: UpdateGendersDto,
+    @Body() dto: UpdateGenderDto,
   ): Promise<Gender> {
     return this.gendersService.update(id, dto);
   }

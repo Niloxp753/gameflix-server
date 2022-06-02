@@ -10,10 +10,10 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateGamesDto } from './dto/create-games.dto';
-import { UpdateGamesDto } from './dto/update-games.dto';
-import { Game } from './entities/games.entity';
-import { GamesService } from './games.service';
+import { CreateGameDto } from './dto/create-game.dto';
+import { UpdateGameDto } from './dto/update-game.dto';
+import { Game } from './entities/game.entity';
+import { GamesService } from './game.service';
 
 @ApiTags('games')
 @Controller('games')
@@ -40,7 +40,7 @@ export class GamesController {
   @ApiOperation({
     summary: 'Criar um Jogo',
   })
-  create(@Body() dto: CreateGamesDto): Promise<Game> {
+  create(@Body() dto: CreateGameDto): Promise<Game> {
     return this.gamesService.create(dto);
   }
 
@@ -48,7 +48,7 @@ export class GamesController {
   @ApiOperation({
     summary: 'Editar um Jogo pelo ID',
   })
-  update(@Param('id') id: string, @Body() dto: UpdateGamesDto): Promise<Game> {
+  update(@Param('id') id: string, @Body() dto: UpdateGameDto): Promise<Game> {
     return this.gamesService.update(id, dto);
   }
 

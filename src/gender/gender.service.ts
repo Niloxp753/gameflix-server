@@ -4,20 +4,20 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateGamesDto } from './dto/create-games.dto';
-import { UpdateGamesDto } from './dto/update-games.dto';
-import { Game } from './entities/games.entity';
+import { CreateGenderDto } from './dto/create-gender.dto';
+import { UpdateGenderDto } from './dto/update-gender.dto';
+import { Gender } from './entities/gender.entity';
 
 @Injectable()
-export class GamesService {
+export class GendersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll(): Promise<Game[]> {
-    return this.prisma.games.findMany();
+  findAll(): Promise<Gender[]> {
+    return this.prisma.gender.findMany();
   }
 
-  async findById(id: string): Promise<Game> {
-    const record = await this.prisma.games.findUnique({ where: { id } });
+  async findById(id: string): Promise<Gender> {
+    const record = await this.prisma.gender.findUnique({ where: { id } });
 
     if (!record) {
       throw new NotFoundException(`Registro com o ID '${id}' não encontrado.`);
@@ -26,21 +26,21 @@ export class GamesService {
     return record;
   }
 
-  async findOne(id: string): Promise<Game> {
+  async findOne(id: string): Promise<Gender> {
     return this.findById(id);
   }
 
-  create(dto: CreateGamesDto): Promise<Game> {
-    const data: Game = { ...dto };
+  create(dto: CreateGenderDto): Promise<Gender> {
+    const data: Gender = { ...dto };
 
-    return this.prisma.games.create({ data }).catch(this.handleError);
+    return this.prisma.gender.create({ data }).catch(this.handleError);
   }
 
-  async update(id: string, dto: UpdateGamesDto): Promise<Game> {
+  async update(id: string, dto: UpdateGenderDto): Promise<Gender> {
     await this.findById(id);
-    const data: Partial<Game> = { ...dto };
+    const data: Partial<Gender> = { ...dto };
 
-    return this.prisma.games
+    return this.prisma.gender
       .update({
         where: { id },
         data,
@@ -50,7 +50,7 @@ export class GamesService {
 
   async delete(id: string) {
     await this.findById(id);
-    await this.prisma.games.delete({ where: { id } });
+    await this.prisma.gender.delete({ where: { id } });
   }
 
   handleError(error: Error): undefined {
