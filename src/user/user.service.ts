@@ -12,7 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { cpf } from 'cpf-cnpj-validator';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   private userSelect = {
     id: true,
     username: true,
