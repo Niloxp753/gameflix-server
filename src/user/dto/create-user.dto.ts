@@ -12,13 +12,6 @@ import {
 export class CreateUserDto {
   @IsString()
   @ApiProperty({
-    description: 'Nome de usuário. Utilizado no login. Deve ser único',
-    example: 'niloxp',
-  })
-  username: string;
-
-  @IsString()
-  @ApiProperty({
     description: 'Nome do usuário. Apenas para exibição',
     example: 'Danilo Diniz',
   })
