@@ -28,7 +28,7 @@ export class AuthController {
   }
 
   @Get()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: 'Retorna o usuário autenticado no momento',
   })
