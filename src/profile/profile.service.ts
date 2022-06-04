@@ -3,10 +3,10 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { Profile } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { Profile } from './entities/profile.entity';
 
 @Injectable()
 export class ProfilesService {
@@ -40,10 +40,15 @@ export class ProfilesService {
     return this.findById(id);
   }
 
-  create(dto: CreateProfileDto): Promise<Profile> {
-    return this.prisma.profile
-      .create({ data: dto, include: { games: true } })
-      .catch(this.handleError);
+  create(userId: string, dto: CreateProfileDto): Promise<Profile> {
+    return this.prisma.profile.create({
+      data: {
+        title: dto.title,
+        imageURL: dto.imageURL,
+        user: { connect: { id: userId } },
+      },
+      include: { games: true },
+    });
   }
 
   async update(id: string, dto: UpdateProfileDto): Promise<Profile> {

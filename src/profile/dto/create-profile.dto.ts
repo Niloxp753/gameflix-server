@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsUrl } from 'class-validator';
+import { IsString, IsUrl, IsUUID } from 'class-validator';
 
 export class CreateProfileDto {
   @IsString()
@@ -18,9 +18,11 @@ export class CreateProfileDto {
   })
   imageURL: string;
 
+  @IsUUID()
   @IsString()
-  userId: string;
-
-  @IsString()
+  @ApiProperty({
+    description: 'ID do jogo no perfil',
+    example: '18a6212f-1165-4ff2-b33b-caaf8c50e2ac',
+  })
   gameId: string;
 }
