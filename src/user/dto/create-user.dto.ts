@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsEmail,
   IsNotEmpty,
   IsString,
@@ -54,17 +55,18 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(14)
-  @MaxLength(14)
+  @MinLength(11)
+  @MaxLength(11)
   @ApiProperty({
     description: 'CPF do usuário',
-    example: '123.456.789-12',
+    example: '12345678912',
   })
   cpf: string;
 
+  @IsBoolean()
   @ApiProperty({
     description: 'Verificar se o usuário é um administrador',
-    example: true,
+    example: false,
   })
   isAdmin?: boolean;
 }
