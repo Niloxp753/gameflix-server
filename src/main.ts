@@ -18,6 +18,7 @@ async function bootstrap() {
     .addTag('genders')
     .addTag('user')
     .addTag('profile')
+    .addTag('favorite')
     .addBearerAuth()
     .build();
 
