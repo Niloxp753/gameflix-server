@@ -8,6 +8,7 @@ import { PrismaService } from './prisma/prisma.service';
 import { ProfilesModule } from './profile/profile.module';
 import { UsersModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { FavoriteModule } from './favorite/favorite.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuthModule } from './auth/auth.module';
     ProfilesModule,
     UsersModule,
     AuthModule,
+    FavoriteModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
