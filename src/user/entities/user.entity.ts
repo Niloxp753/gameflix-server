@@ -5,6 +5,7 @@ export class User {
   password: string;
   image: string;
   cpf: string;
+  isAdmin: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

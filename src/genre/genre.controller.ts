@@ -12,50 +12,47 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateGenderDto } from './dto/create-gender.dto';
-import { UpdateGenderDto } from './dto/update-gender.dto';
-import { Gender } from './entities/gender.entity';
-import { GendersService } from './gender.service';
+import { CreateGenreDto } from './dto/create-genre.dto';
+import { UpdateGenreDto } from './dto/update-genre.dto';
+import { Genre } from './entities/genre.entity';
+import { GenresService } from './genre.service';
 @ApiTags('genders')
 @UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth()
 @Controller('genders')
-export class GendersController {
-  constructor(private readonly gendersService: GendersService) {}
+export class GenresController {
+  constructor(private readonly genresService: GenresService) {}
 
   @Get()
   @ApiOperation({
     summary: 'Listar todos os Gêneros',
   })
-  findAll(): Promise<Gender[]> {
-    return this.gendersService.findAll();
+  findAll(): Promise<Genre[]> {
+    return this.genresService.findAll();
   }
 
   @Get(':id')
   @ApiOperation({
     summary: 'Visualizar um Gênero',
   })
-  findOne(@Param('id') id: string): Promise<Gender> {
-    return this.gendersService.findOne(id);
+  findOne(@Param('id') id: string): Promise<Genre> {
+    return this.genresService.findOne(id);
   }
 
   @Post()
   @ApiOperation({
     summary: 'Criar um Gênero',
   })
-  create(@Body() dto: CreateGenderDto): Promise<Gender> {
-    return this.gendersService.create(dto);
+  create(@Body() dto: CreateGenreDto): Promise<Genre> {
+    return this.genresService.create(dto);
   }
 
   @Patch(':id')
   @ApiOperation({
     summary: 'Editar um Gênero pelo ID',
   })
-  update(
-    @Param('id') id: string,
-    @Body() dto: UpdateGenderDto,
-  ): Promise<Gender> {
-    return this.gendersService.update(id, dto);
+  update(@Param('id') id: string, @Body() dto: UpdateGenreDto): Promise<Genre> {
+    return this.genresService.update(id, dto);
   }
 
   @Delete(':id')
@@ -64,6 +61,6 @@ export class GendersController {
     summary: 'Remover um Gênero pelo ID',
   })
   delete(@Param('id') id: string) {
-    this.gendersService.delete(id);
+    this.genresService.delete(id);
   }
 }

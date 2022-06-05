@@ -13,6 +13,8 @@ import { cpf } from 'cpf-cnpj-validator';
 
 @Injectable()
 export class UserService {
+  constructor(private readonly prisma: PrismaService) {}
+
   private userSelect = {
     id: true,
     username: true,
@@ -23,9 +25,8 @@ export class UserService {
     image: true,
     createdAt: true,
     updatedAt: true,
+    isAdmin: true,
   };
-
-  constructor(private readonly prisma: PrismaService) {}
 
   findAll(): Promise<User[]> {
     return this.prisma.user.findMany({
@@ -65,6 +66,7 @@ export class UserService {
       ...dto,
       password: await bcrypt.hash(dto.password, 10),
       cpf: cpf.format(dto.cpf),
+      isAdmin: dto.isAdmin,
     };
 
     return this.prisma.user

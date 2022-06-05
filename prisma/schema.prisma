@@ -20,12 +20,12 @@ model Game {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  genders  Gender[]
+  genders  Genre[]
   profiles Profile[]
   @@map("games")
 }
 
-model Gender {
+model Genre {
   id   String @id @default(uuid())
   name String @unique
 
@@ -33,7 +33,7 @@ model Gender {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   games Game[]
-  @@map("genders")
+  @@map("genres")
 }
 
 model User {
@@ -43,6 +43,7 @@ model User {
   password String
   image    String
   cpf      String @unique
+  isAdmin Boolean @map("is_admin")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

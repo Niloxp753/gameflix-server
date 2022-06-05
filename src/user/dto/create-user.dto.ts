@@ -61,4 +61,10 @@ export class CreateUserDto {
     example: '123.456.789-12',
   })
   cpf: string;
+
+  @ApiProperty({
+    description: 'Verificar se o usuário é um administrador',
+    example: true,
+  })
+  isAdmin?: boolean;
 }
