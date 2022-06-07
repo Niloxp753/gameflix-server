@@ -8,6 +8,7 @@ datasource db {
 }
 
 model Game {
+
   id                 String @id @default(uuid())
   title              String @unique
   coverImageUrl      String @unique
@@ -20,24 +21,30 @@ model Game {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  favorite Favorite[]
+  favorite Favorite[] @relation(references: [id])
   genders  Genre[]
   profiles Profile[]
+
   @@map("games")
+
 }
 
 model Genre {
+
   id   String @id @default(uuid())
   name String @unique
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+
   games Game[]
   @@map("genres")
+
 }
 
 model User {
+
   id       String  @id @default(uuid())
   name     String
   email    String  @unique
@@ -50,10 +57,13 @@ model User {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   profiles Profile[]
+
   @@map("users")
+
 }
 
 model Profile {
+
   id       String @id @default(uuid())
   title    String @unique
   imageURL String
@@ -66,17 +76,23 @@ model Profile {
 
   favorite Favorite[]
   games Game[]
+
   @@map("profile")
+
 }
 
 model Favorite {
+
   id String @id @default(uuid())
+
+  profile Profile   @relation(fields: [profileId], references: [id])
+  profileId String @map("user_id")
+
+  games Game[] @relation(references: [id])
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  game Game[]
-  profile Profile[]
-
   @@map("favorite")
+
 }

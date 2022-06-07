@@ -14,7 +14,9 @@ export class FavoriteService {
   constructor(private readonly prisma: PrismaService) {}
 
   findAll(): Promise<Favorite[]> {
-    return this.prisma.favorite.findMany();
+    return this.prisma.favorite.findMany({
+      include: { games: true, profile: true },
+    });
   }
 
   async findById(id: string): Promise<Favorite> {
@@ -43,8 +45,7 @@ export class FavoriteService {
         where: { id },
         data: dto,
         include: {
-          game: true,
-          profile: true,
+          games: true,
         },
       })
       .catch(this.handleError);
