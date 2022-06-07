@@ -41,14 +41,16 @@ export class ProfilesService {
   }
 
   create(userId: string, dto: CreateProfileDto): Promise<Profile> {
-    return this.prisma.profile.create({
-      data: {
-        title: dto.title,
-        imageURL: dto.imageURL,
-        user: { connect: { id: userId } },
-      },
-      include: { games: true },
-    });
+    return this.prisma.profile
+      .create({
+        data: {
+          title: dto.title,
+          imageURL: dto.imageURL,
+          user: { connect: { id: userId } },
+        },
+        include: { games: true },
+      })
+      .catch(this.handleError);
   }
 
   async update(id: string, dto: UpdateProfileDto): Promise<Profile> {
