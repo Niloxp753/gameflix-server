@@ -33,7 +33,7 @@ export class FavoriteController {
 
   @Get()
   @ApiOperation({
-    summary: 'Listar todos os jogos favoritos',
+    summary: 'Listar todos os jogos favoritos vinculados ao perfil',
   })
   findAll() {
     return this.favoriteService.findAll();
@@ -41,7 +41,7 @@ export class FavoriteController {
 
   @Get(':id')
   @ApiOperation({
-    summary: 'Visualizar um jogo favorito pelo ID',
+    summary: 'Visualizar os jogos favoritos pelo ID vinculados aos perfis',
   })
   findOne(@Param('id') id: string) {
     return this.favoriteService.findOne(id);
@@ -49,7 +49,7 @@ export class FavoriteController {
 
   @Patch(':id')
   @ApiOperation({
-    summary: 'Editar um jogo favorito pelo ID',
+    summary: 'Editar um jogo favorito e/ou o perfil pelo ID',
   })
   update(
     @Param('id') id: string,
@@ -61,7 +61,7 @@ export class FavoriteController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
-    summary: 'Remover um jogo favorito pelo ID',
+    summary: 'Remover um jogo favorito e/ou perfil pelo ID',
   })
   delete(@Param('id') id: string) {
     this.favoriteService.delete(id);
