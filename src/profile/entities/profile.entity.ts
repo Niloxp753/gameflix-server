@@ -6,7 +6,7 @@ export class Profile {
   title: string;
   imageURL: string;
   user?: User;
-  games: Game[];
+  games?: Game[];
   createdAt?: Date;
   updatedAt?: Date;
 }

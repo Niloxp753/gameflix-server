@@ -53,8 +53,12 @@ export class ProfilesController {
   @ApiOperation({
     summary: 'Editar um perfil pelo ID',
   })
-  update(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
-    return this.profilesService.update(id, updateProfileDto);
+  update(
+    @LoggedUser() user: User,
+    @Param('id') id: string,
+    @Body() updateProfileDto: UpdateProfileDto,
+  ) {
+    return this.profilesService.update(user.id, id, updateProfileDto);
   }
 
   @Delete(':id')
