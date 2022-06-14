@@ -3,6 +3,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from 'src/user/entities/user.entity';
 import { CreateGenreDto } from './dto/create-genre.dto';
@@ -14,13 +15,19 @@ export class GenresService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(user: User, dto: CreateGenreDto): Promise<Genre> {
-    const data: Genre = { ...dto };
+    const data: Prisma.GenreCreateInput = { name: dto.name };
 
     return await this.prisma.genre.create({ data }).catch(this.handleError);
   }
 
-  findAll(): Promise<Genre[]> {
-    return this.prisma.genre.findMany();
+  async findAll(): Promise<Genre[]> {
+    const genreList = await this.prisma.genre.findMany();
+
+    if (genreList.length === 0) {
+      throw new NotFoundException('Não existe gêneros cadastrados.');
+    }
+
+    return genreList;
   }
 
   async findById(id: string): Promise<Genre> {
@@ -34,7 +41,9 @@ export class GenresService {
   }
 
   async findOne(id: string): Promise<Genre> {
-    return this.findById(id);
+    await this.findById(id);
+
+    return await this.prisma.genre.findUnique({ where: { id } });
   }
 
   async update(id: string, dto: UpdateGenreDto): Promise<Genre> {
