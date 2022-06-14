@@ -40,7 +40,7 @@ export class GamesService {
       },
     });
     if (gameList.length === 0) {
-      throw new NotFoundException('Não existe jogos cadastrados.');
+      throw new NotFoundException('Não existem jogos cadastrados.');
     }
     return gameList;
   }
