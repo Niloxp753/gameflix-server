@@ -1,11 +1,8 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Favorite, Prisma } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma/prisma.service';
+import { handleError } from 'src/utils/handle-error.util';
 import { CreateFavoriteDto } from './dto/create-favorite.dto';
 import { UpdateFavoriteDto } from './dto/update-favorite.dto';
 
@@ -26,7 +23,7 @@ export class FavoriteService {
         },
       },
     };
-    return this.prisma.favorite.create({ data }).catch(this.handleError);
+    return this.prisma.favorite.create({ data }).catch(handleError);
   }
 
   async findAll(): Promise<Favorite[]> {
@@ -83,19 +80,11 @@ export class FavoriteService {
           profile: true,
         },
       })
-      .catch(this.handleError);
+      .catch(handleError);
   }
 
   async delete(id: string) {
     await this.findById(id);
     await this.prisma.favorite.delete({ where: { id } });
-  }
-
-  handleError(error: Error): undefined {
-    const errorLines = error.message?.split('\n');
-    const lastErrorLine = errorLines[errorLines.length - 1]?.trim();
-    throw new UnprocessableEntityException(
-      lastErrorLine || 'Algum erro aconteceu ao executar a operação',
-    );
   }
 }

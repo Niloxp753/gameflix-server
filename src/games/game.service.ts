@@ -1,10 +1,7 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { handleError } from 'src/utils/handle-error.util';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
 import { Game } from './entities/game.entity';
@@ -30,7 +27,7 @@ export class GamesService {
       gameplayYoutubeUrl: dto.gameplayYoutubeUrl,
     };
 
-    return await this.prisma.game.create({ data }).catch(this.handleError);
+    return await this.prisma.game.create({ data }).catch(handleError);
   }
 
   async findAll(): Promise<Game[]> {
@@ -80,19 +77,11 @@ export class GamesService {
         where: { id },
         data,
       })
-      .catch(this.handleError);
+      .catch(handleError);
   }
 
   async delete(id: string) {
     await this.findById(id);
     await this.prisma.game.delete({ where: { id } });
-  }
-
-  handleError(error: Error): undefined {
-    const errorLines = error.message?.split('\n');
-    const lastErrorLine = errorLines[errorLines.length - 1]?.trim();
-    throw new UnprocessableEntityException(
-      lastErrorLine || 'Algum erro aconteceu ao executar a operação',
-    );
   }
 }

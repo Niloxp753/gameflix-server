@@ -1,9 +1,6 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { handleError } from 'src/utils/handle-error.util';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 
@@ -27,7 +24,7 @@ export class ProfilesService {
           },
           include: { games: true },
         })
-        .catch(this.handleError);
+        .catch(handleError);
     } else {
       return await this.prisma.profile
         .create({
@@ -38,7 +35,7 @@ export class ProfilesService {
           },
           include: { games: true },
         })
-        .catch(this.handleError);
+        .catch(handleError);
     }
   }
 
@@ -125,7 +122,7 @@ export class ProfilesService {
               games: true,
             },
           })
-          .catch(this.handleError);
+          .catch(handleError);
       } else {
         console.log('rodou');
         return this.prisma.profile
@@ -145,7 +142,7 @@ export class ProfilesService {
               games: true,
             },
           })
-          .catch(this.handleError);
+          .catch(handleError);
       }
     }
   }
@@ -153,13 +150,5 @@ export class ProfilesService {
   async delete(id: string) {
     await this.findById(id);
     await this.prisma.profile.delete({ where: { id } });
-  }
-
-  handleError(error: Error): undefined {
-    const errorLines = error.message?.split('\n');
-    const lastErrorLine = errorLines[errorLines.length - 1]?.trim();
-    throw new UnprocessableEntityException(
-      lastErrorLine || 'Algum erro aconteceu ao executar a operação',
-    );
   }
 }

@@ -1,11 +1,8 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from 'src/user/entities/user.entity';
+import { handleError } from 'src/utils/handle-error.util';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
 import { Genre } from './entities/genre.entity';
@@ -17,7 +14,7 @@ export class GenresService {
   async create(user: User, dto: CreateGenreDto): Promise<Genre> {
     const data: Prisma.GenreCreateInput = { name: dto.name };
 
-    return await this.prisma.genre.create({ data }).catch(this.handleError);
+    return await this.prisma.genre.create({ data }).catch(handleError);
   }
 
   async findAll(): Promise<Genre[]> {
@@ -55,19 +52,11 @@ export class GenresService {
         where: { id },
         data,
       })
-      .catch(this.handleError);
+      .catch(handleError);
   }
 
   async delete(id: string) {
     await this.findById(id);
     await this.prisma.genre.delete({ where: { id } });
-  }
-
-  handleError(error: Error): undefined {
-    const errorLines = error.message?.split('\n');
-    const lastErrorLine = errorLines[errorLines.length - 1]?.trim();
-    throw new UnprocessableEntityException(
-      lastErrorLine || 'Algum erro aconteceu ao executar a operação',
-    );
   }
 }
