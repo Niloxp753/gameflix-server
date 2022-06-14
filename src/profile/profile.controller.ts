@@ -1,22 +1,22 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
-import { ProfilesService } from './profile.service';
-import { CreateProfileDto } from './dto/create-profile.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LoggedUser } from 'src/auth/logged-user.decorator';
 import { User } from 'src/user/entities/user.entity';
+import { CreateProfileDto } from './dto/create-profile.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ProfilesService } from './profile.service';
 
 @ApiTags('profile')
 @UseGuards(AuthGuard('jwt'))
@@ -37,8 +37,8 @@ export class ProfilesController {
   @ApiOperation({
     summary: 'Listar todos os perfis',
   })
-  findAll() {
-    return this.profilesService.findAll();
+  findAll(@Param('userId') id: string) {
+    return this.profilesService.findAll(id);
   }
 
   @Get(':id')
