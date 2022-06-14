@@ -11,13 +11,55 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 export class ProfilesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    return this.prisma.profile.findMany({
-      include: {
-        user: true,
-        games: true,
+  async create(userId: string, dto: CreateProfileDto) {
+    if (dto.gameId) {
+      return await this.prisma.profile
+        .create({
+          data: {
+            title: dto.title,
+            imageURL: dto.imageURL,
+            userId: userId,
+            games: {
+              connect: {
+                id: dto.gameId,
+              },
+            },
+          },
+          include: { games: true },
+        })
+        .catch(this.handleError);
+    } else {
+      return await this.prisma.profile
+        .create({
+          data: {
+            title: dto.title,
+            imageURL: dto.imageURL,
+            userId: userId,
+          },
+          include: { games: true },
+        })
+        .catch(this.handleError);
+    }
+  }
+
+  async findAll(userId: string) {
+    const profileList = await this.prisma.profile.findMany({
+      where: {
+        userId,
+      },
+      select: {
+        id: true,
+        imageURL: true,
+        title: true,
       },
     });
+
+    if (profileList.length === 0) {
+      throw new NotFoundException(
+        'Não existem perfis cadastrados para esse usuário.',
+      );
+    }
+    return profileList;
   }
 
   async findById(id: string) {
@@ -36,38 +78,22 @@ export class ProfilesService {
   }
 
   async findOne(id: string) {
-    return this.findById(id);
-  }
+    await this.findById(id);
 
-  create(userId: string, dto: CreateProfileDto) {
-    if (dto.gameId) {
-      return this.prisma.profile
-        .create({
-          data: {
-            title: dto.title,
-            imageURL: dto.imageURL,
-            userId: userId,
-            games: {
-              connect: {
-                id: dto.gameId,
-              },
-            },
+    return await this.prisma.profile.findUnique({
+      where: { id },
+      select: {
+        title: true,
+        imageURL: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
           },
-          include: { games: true },
-        })
-        .catch(this.handleError);
-    } else {
-      return this.prisma.profile
-        .create({
-          data: {
-            title: dto.title,
-            imageURL: dto.imageURL,
-            userId: userId,
-          },
-          include: { games: true },
-        })
-        .catch(this.handleError);
-    }
+        },
+        _count: { select: { games: true } },
+      },
+    });
   }
 
   async update(userId: string, id: string, dto: UpdateProfileDto) {
