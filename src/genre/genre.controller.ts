@@ -12,6 +12,8 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { LoggedUser } from 'src/auth/logged-user.decorator';
+import { User } from 'src/user/entities/user.entity';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
 import { Genre } from './entities/genre.entity';
@@ -22,6 +24,17 @@ import { GenresService } from './genre.service';
 @Controller('genders')
 export class GenresController {
   constructor(private readonly genresService: GenresService) {}
+
+  @Post()
+  @ApiOperation({
+    summary: 'Criar um Gênero',
+  })
+  create(
+    @LoggedUser() user: User,
+    @Body() dto: CreateGenreDto,
+  ): Promise<Genre> {
+    return this.genresService.create(user, dto);
+  }
 
   @Get()
   @ApiOperation({
@@ -37,14 +50,6 @@ export class GenresController {
   })
   findOne(@Param('id') id: string): Promise<Genre> {
     return this.genresService.findOne(id);
-  }
-
-  @Post()
-  @ApiOperation({
-    summary: 'Criar um Gênero',
-  })
-  create(@Body() dto: CreateGenreDto): Promise<Genre> {
-    return this.genresService.create(dto);
   }
 
   @Patch(':id')

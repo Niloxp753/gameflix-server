@@ -3,6 +3,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
@@ -12,8 +13,36 @@ import { Game } from './entities/game.entity';
 export class GamesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll(): Promise<Game[]> {
-    return this.prisma.game.findMany();
+  async create(dto: CreateGameDto): Promise<Game> {
+    const data: Prisma.GameCreateInput = {
+      genre: {
+        connectOrCreate: {
+          create: { name: dto.genre },
+          where: { name: dto.genre },
+        },
+      },
+      title: dto.title,
+      coverImageUrl: dto.coverImageUrl,
+      description: dto.description,
+      year: dto.year,
+      imdbScore: dto.imdbScore,
+      trailerYoutubeUrl: dto.trailerYoutubeUrl,
+      gameplayYoutubeUrl: dto.gameplayYoutubeUrl,
+    };
+
+    return await this.prisma.game.create({ data }).catch(this.handleError);
+  }
+
+  async findAll(): Promise<Game[]> {
+    const gameList = await this.prisma.game.findMany({
+      include: {
+        genre: true,
+      },
+    });
+    if (gameList.length === 0) {
+      throw new NotFoundException('Não existe jogos cadastrados.');
+    }
+    return gameList;
   }
 
   async findById(id: string): Promise<Game> {
@@ -27,18 +56,24 @@ export class GamesService {
   }
 
   async findOne(id: string): Promise<Game> {
-    return this.findById(id);
-  }
+    await this.findById(id);
 
-  create(dto: CreateGameDto): Promise<Game> {
-    const data: Game = { ...dto };
-
-    return this.prisma.game.create({ data }).catch(this.handleError);
+    return await this.prisma.game.findUnique({
+      where: { id },
+      include: { genre: true },
+    });
   }
 
   async update(id: string, dto: UpdateGameDto): Promise<Game> {
     await this.findById(id);
-    const data: Partial<Game> = { ...dto };
+    const data: Prisma.GameUpdateInput = {
+      genre: {
+        connectOrCreate: {
+          create: { name: dto.genre },
+          where: { name: dto.genre },
+        },
+      },
+    };
 
     return this.prisma.game
       .update({

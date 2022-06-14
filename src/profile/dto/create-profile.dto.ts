@@ -21,7 +21,7 @@ export class CreateProfileDto {
   @IsString()
   @ApiProperty({
     description: 'Id do jogo',
-    example: 'b36a6d81-66bc-40bf-a8a9-9b17cb2e7d75',
+    example: '9c14d4fb-7c67-46b1-b383-66fc226fce00',
   })
   gameId?: string;
 }

@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsPositive, IsString, IsUrl } from 'class-validator';
+import {
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 
 export class CreateGameDto {
   @IsString()
@@ -55,4 +61,12 @@ export class CreateGameDto {
     example: 'https://youtu.be/Wf5tpMhziII',
   })
   gameplayYoutubeUrl: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Gênero dos jogos',
+    example: 'Aventura',
+  })
+  genre: string;
 }
