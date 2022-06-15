@@ -6,6 +6,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { handleError } from 'src/utils/handle-error.util';
+import { isAdmin } from 'src/utils/is-admin.util';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -23,31 +24,8 @@ export class UserService {
     image: true,
     createdAt: true,
     updatedAt: true,
-    isAdmin: false,
+    isAdmin: true,
   };
-
-  findAll(): Promise<User[]> {
-    return this.prisma.user.findMany({
-      select: this.userSelect,
-    });
-  }
-
-  async findById(id: string): Promise<User> {
-    const record = await this.prisma.user.findUnique({
-      where: { id },
-      select: this.userSelect,
-    });
-
-    if (!record) {
-      throw new NotFoundException(`Registro com o ID '${id}' não encontrado.`);
-    }
-
-    return record;
-  }
-
-  async findOne(id: string): Promise<User> {
-    return this.findById(id);
-  }
 
   async create(dto: CreateUserDto): Promise<User> {
     if (dto.password != dto.confirmPassword) {
@@ -70,7 +48,44 @@ export class UserService {
       .catch(handleError);
   }
 
-  async update(id: string, dto: UpdateUserDto): Promise<User> {
+  async findAll(user: User) {
+    isAdmin(user);
+
+    const userList = await this.prisma.user.findMany({
+      select: this.userSelect,
+    });
+
+    if (userList.length === 0) {
+      throw new NotFoundException('Não existem usuários cadastrados.');
+    }
+    return userList;
+  }
+
+  async findById(id: string): Promise<User> {
+    const record = await this.prisma.user.findUnique({
+      where: { id },
+      select: this.userSelect,
+    });
+
+    if (!record) {
+      throw new NotFoundException(`Registro com o ID '${id}' não encontrado.`);
+    }
+
+    return record;
+  }
+
+  async findOne(user: User, id: string) {
+    isAdmin(user);
+    await this.findById(id);
+
+    return await this.prisma.user.findUnique({
+      where: { id },
+      select: this.userSelect,
+    });
+  }
+
+  async update(user: User, id: string, dto: UpdateUserDto): Promise<User> {
+    isAdmin(user);
     await this.findById(id);
 
     if (dto.password) {
@@ -96,7 +111,8 @@ export class UserService {
       .catch(handleError);
   }
 
-  async delete(id: string) {
+  async delete(user: User, id: string) {
+    isAdmin(user);
     await this.findById(id);
     await this.prisma.user.delete({ where: { id } });
   }

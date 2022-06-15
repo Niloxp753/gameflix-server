@@ -12,6 +12,8 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { LoggedUser } from 'src/auth/logged-user.decorator';
+import { User } from 'src/user/entities/user.entity';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
 import { Game } from './entities/game.entity';
@@ -26,10 +28,10 @@ export class GamesController {
 
   @Post()
   @ApiOperation({
-    summary: 'Criar um Jogo',
+    summary: 'Cadastrar um Jogo (restrito somente ao Admin)',
   })
-  create(@Body() dto: CreateGameDto): Promise<Game> {
-    return this.gamesService.create(dto);
+  create(@LoggedUser() user: User, @Body() dto: CreateGameDto): Promise<Game> {
+    return this.gamesService.create(user, dto);
   }
 
   @Get()
@@ -50,18 +52,22 @@ export class GamesController {
 
   @Patch(':id')
   @ApiOperation({
-    summary: 'Editar um Jogo pelo ID',
+    summary: 'Editar um Jogo pelo ID (restrito somente ao Admin)',
   })
-  update(@Param('id') id: string, @Body() dto: UpdateGameDto): Promise<Game> {
-    return this.gamesService.update(id, dto);
+  update(
+    @LoggedUser() user: User,
+    @Param('id') id: string,
+    @Body() dto: UpdateGameDto,
+  ): Promise<Game> {
+    return this.gamesService.update(user, id, dto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
-    summary: 'Remover um Jogo pelo ID',
+    summary: 'Remover um Jogo pelo ID (restrito somente ao Admin)',
   })
-  delete(@Param('id') id: string) {
-    this.gamesService.delete(id);
+  delete(@LoggedUser() user: User, @Param('id') id: string) {
+    this.gamesService.delete(user, id);
   }
 }

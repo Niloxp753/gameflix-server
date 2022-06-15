@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from 'src/user/entities/user.entity';
 import { handleError } from 'src/utils/handle-error.util';
+import { isAdmin } from 'src/utils/is-admin.util';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
 import { Genre } from './entities/genre.entity';
@@ -12,6 +13,7 @@ export class GenresService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(user: User, dto: CreateGenreDto): Promise<Genre> {
+    isAdmin(user);
     const data: Prisma.GenreCreateInput = { name: dto.name };
 
     return await this.prisma.genre.create({ data }).catch(handleError);
@@ -43,7 +45,8 @@ export class GenresService {
     return await this.prisma.genre.findUnique({ where: { id } });
   }
 
-  async update(id: string, dto: UpdateGenreDto): Promise<Genre> {
+  async update(user: User, id: string, dto: UpdateGenreDto) {
+    isAdmin(user);
     await this.findById(id);
     const data: Partial<Genre> = { ...dto };
 
@@ -55,7 +58,8 @@ export class GenresService {
       .catch(handleError);
   }
 
-  async delete(id: string) {
+  async delete(user: User, id: string) {
+    isAdmin(user);
     await this.findById(id);
     await this.prisma.genre.delete({ where: { id } });
   }

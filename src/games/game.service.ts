@@ -1,7 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { User } from 'src/user/entities/user.entity';
 import { handleError } from 'src/utils/handle-error.util';
+import { isAdmin } from 'src/utils/is-admin.util';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
 import { Game } from './entities/game.entity';
@@ -10,7 +12,9 @@ import { Game } from './entities/game.entity';
 export class GamesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: CreateGameDto): Promise<Game> {
+  async create(user: User, dto: CreateGameDto) {
+    isAdmin(user);
+
     const data: Prisma.GameCreateInput = {
       genre: {
         connectOrCreate: {
@@ -61,7 +65,8 @@ export class GamesService {
     });
   }
 
-  async update(id: string, dto: UpdateGameDto): Promise<Game> {
+  async update(user: User, id: string, dto: UpdateGameDto): Promise<Game> {
+    isAdmin(user);
     await this.findById(id);
     const data: Prisma.GameUpdateInput = {
       genre: {
@@ -80,7 +85,8 @@ export class GamesService {
       .catch(handleError);
   }
 
-  async delete(id: string) {
+  async delete(user: User, id: string) {
+    isAdmin(user);
     await this.findById(id);
     await this.prisma.game.delete({ where: { id } });
   }

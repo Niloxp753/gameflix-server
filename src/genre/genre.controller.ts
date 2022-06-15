@@ -54,18 +54,22 @@ export class GenresController {
 
   @Patch(':id')
   @ApiOperation({
-    summary: 'Editar um Gênero pelo ID',
+    summary: 'Editar um Gênero pelo ID (restrito somente ao Admin)',
   })
-  update(@Param('id') id: string, @Body() dto: UpdateGenreDto): Promise<Genre> {
-    return this.genresService.update(id, dto);
+  update(
+    @LoggedUser() user: User,
+    @Param('id') id: string,
+    @Body() dto: UpdateGenreDto,
+  ): Promise<Genre> {
+    return this.genresService.update(user, id, dto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
-    summary: 'Remover um Gênero pelo ID',
+    summary: 'Remover um Gênero pelo ID (restrito somente ao Admin)',
   })
-  delete(@Param('id') id: string) {
-    this.genresService.delete(id);
+  delete(@LoggedUser() user: User, @Param('id') id: string) {
+    this.genresService.delete(user, id);
   }
 }

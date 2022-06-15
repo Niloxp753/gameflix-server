@@ -1,20 +1,22 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { User } from '@prisma/client';
+import { LoggedUser } from 'src/auth/logged-user.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
+import { UserService } from './user.service';
 
 @ApiTags('user')
 @Controller('user')
@@ -35,8 +37,8 @@ export class UserController {
   @ApiOperation({
     summary: 'Listar todos os usuários',
   })
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@LoggedUser() user: User) {
+    return this.usersService.findAll(user);
   }
 
   @Get(':id')
@@ -45,8 +47,8 @@ export class UserController {
   @ApiOperation({
     summary: 'Visualizar um usuário pelo ID',
   })
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  findOne(@LoggedUser() user: User, @Param('id') id: string) {
+    return this.usersService.findOne(user, id);
   }
 
   @Patch(':id')
@@ -55,8 +57,12 @@ export class UserController {
   @ApiOperation({
     summary: 'Editar um usuário pelo ID',
   })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  update(
+    @LoggedUser() user: User,
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.usersService.update(user, id, updateUserDto);
   }
 
   @Delete(':id')
@@ -66,7 +72,7 @@ export class UserController {
   @ApiOperation({
     summary: 'Remover um usuário pelo ID',
   })
-  delete(@Param('id') id: string) {
-    this.usersService.delete(id);
+  delete(@LoggedUser() user: User, @Param('id') id: string) {
+    this.usersService.delete(user, id);
   }
 }
