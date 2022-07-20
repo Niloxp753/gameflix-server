@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { User } from 'src/user/entities/user.entity';
 import { handleError } from 'src/utils/handle-error.util';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -39,10 +40,10 @@ export class ProfilesService {
     }
   }
 
-  async findAll(userId: string) {
+  async findAll(user: User) {
     const profileList = await this.prisma.profile.findMany({
       where: {
-        userId,
+        userId: user.id,
       },
       select: {
         id: true,
