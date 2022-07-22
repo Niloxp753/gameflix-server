@@ -79,7 +79,7 @@ model Favorite {
   profile   Profile @relation(fields: [profileId], references: [id])
   profileId String  @unique @map("profile_id")
 
-  games Game[] 
+  games Game[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
