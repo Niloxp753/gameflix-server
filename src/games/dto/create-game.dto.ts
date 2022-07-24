@@ -18,7 +18,8 @@ export class CreateGameDto {
   @IsString()
   @ApiProperty({
     description: 'A imagem do jogo',
-    example: 'https://images6.alphacoders.com/900/900070.jpg',
+    example:
+      'https://cdn.akamai.steamstatic.com/steam/apps/1593500/capsule_616x353.jpg?t=1642526157',
   })
   coverImageUrl: string;
 
