@@ -68,25 +68,19 @@ export class GamesService {
   async update(user: User, id: string, dto: UpdateGameDto): Promise<Game> {
     isAdmin(user);
     await this.findById(id);
+    const data: Prisma.GameUpdateInput = {
+      genre: {
+        connectOrCreate: {
+          create: { name: dto.genre },
+          where: { name: dto.genre },
+        },
+      },
+    };
 
     return this.prisma.game
       .update({
         where: { id },
-        data: {
-          title: dto.title,
-          coverImageUrl: dto.coverImageUrl,
-          description: dto.description,
-          gameplayYoutubeUrl: dto.gameplayYoutubeUrl,
-          trailerYoutubeUrl: dto.gameplayYoutubeUrl,
-          imdbScore: dto.imdbScore,
-          year: dto.year,
-          genre: {
-            connectOrCreate: {
-              create: { name: dto.genre },
-              where: { name: dto.genre },
-            },
-          },
-        },
+        data,
       })
       .catch(handleError);
   }
